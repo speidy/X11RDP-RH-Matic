@@ -1,0 +1,44 @@
+%define	xrdpver		%%XRDPVER%%
+%define	xrdpbranch	%%XRDPBRANCH%%
+
+Summary:	X server for xrdp
+Name:		x11rdp
+Version:	%{xrdpver}+%{xrdpbranch}
+License:	MIT
+Release:	1%{?dist}
+URL:		http://www.xrdp.org/
+Source0:	https://codeload.github.com/%%GH_ACCOUNT%%/%%GH_PROJECT%%/legacy.tar.gz/%%GH_COMMIT%%?dummy=/%%GH_ACCOUNT%%-%%GH_PROJECT%%-%%GH_COMMIT%%.tar.gz
+
+Patch0:		buildx_patch.diff
+
+BuildRequires:	%%BUILDREQUIRES%%
+BuildRoot:	%{_tmppath}/%{name}-%{version}-root
+
+
+%description
+foobar
+
+%prep
+%setup -q -n %%GH_ACCOUNT%%-%%GH_PROJECT%%-%%GH_COMMIT%%
+%patch0 -p0
+%{__sed} -i.bak \
+	-e 's/if ! mkdir $PREFIX_DIR/if ! mkdir -p $PREFIX_DIR/' \
+	-e 's/make -j 1/%%makeCommand%%/g' \
+	-e 's|^download_url=http://server1.xrdp.org/xrdp/X11R7.6|download_url=http://www.club.kyutech.ac.jp/~meta/distfiles/xrdp/X11R7.6|' \
+	xorg/X11R7.6/buildx.sh
+
+%build
+cd xorg/X11R7.6
+env PATH=%{buildroot}/opt/X11rdp/bin:${PATH} ./buildx.sh %{buildroot}/opt/X11rdp
+
+%install
+%{mkdir} -p %{buildroot}/usr/bin
+ln -s /opt/X11rdp/bin/X11rdp %{buildroot}/usr/bin/X11rdp
+
+%clean
+#%{__rm} -rf %{buildroot}
+
+%files
+%defattr(-,root,root)
+/opt/X11rdp/*
+%{bindir}
