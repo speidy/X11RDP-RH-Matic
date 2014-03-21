@@ -32,7 +32,7 @@ cd xorg/X11R7.6
 env PATH=%{buildroot}/opt/X11rdp/bin:${PATH} ./buildx.sh %{buildroot}/opt/X11rdp
 
 %install
-%{mkdir} -p %{buildroot}/usr/bin
+%{__mkdir} -p %{buildroot}/usr/bin
 ln -s /opt/X11rdp/bin/X11rdp %{buildroot}/usr/bin/X11rdp
 
 %clean
