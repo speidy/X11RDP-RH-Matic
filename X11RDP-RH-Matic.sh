@@ -33,6 +33,12 @@ X11RDP_BUILD_DEPENDS="autoconf automake libtool flex bison gcc gcc-c++ libxml2-p
 EXTRA_SOURCE="xrdp.init xrdp.sysconfig xrdp.logrotate xrdp-pam-auth.patch buildx_patch.diff"
 CONFIGURE_ARGS="--enable-fuse"
 
+error_exit() {
+	echo
+	echo 'Oops, something going wrong. exitting...'
+	exit 1
+}
+
 install_depends() {
 	for f in $@; do
 		echo -n "Checking for ${f}... "
@@ -42,7 +48,7 @@ install_depends() {
 		else
 			echo "no"
 			echo -n "Installing $f... "
-			sudo yum -y install $f >> $YUM_LOG && echo "done" ||  exit 1 
+			sudo yum -y install $f >> $YUM_LOG && echo "done" || error_exit
 		fi
 		sleep 0.1
 	done
@@ -62,7 +68,7 @@ calculate_version_num()
 	GH_COMMIT=$(git ls-remote --heads $GH_URL | grep $GH_BRANCH | head -c7)
 	README=https://raw.github.com/${GH_ACCOUNT}/${GH_PROJECT}/${GH_BRANCH}/readme.txt
 	TMPFILE=$(mktemp)
-	wget --quiet -O $TMPFILE $README
+	wget --quiet -O $TMPFILE $README  || error_exit
 	VERSION=$(grep xrdp $TMPFILE | head -1 | cut -d " " -f2)
 	if [ "$(echo $VERSION | cut -c1)" != 'v' ]; then
 		VERSION=${VERSION}.git${GH_COMMIT}
