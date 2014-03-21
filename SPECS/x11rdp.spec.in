@@ -41,4 +41,4 @@ ln -s /opt/X11rdp/bin/X11rdp %{buildroot}/usr/bin/X11rdp
 %files
 %defattr(-,root,root)
 /opt/X11rdp/*
-%{bindir}
+%{_bindir}
