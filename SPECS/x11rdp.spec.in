@@ -39,4 +39,4 @@ find %{buildroot} -type f -exec sed -i 's|%{buildroot}||g' {} \;
 %files
 %defattr(-,root,root)
 %%DESTDIR%%/*
-%{_bindir}
+%{_bindir}/X11rdp
