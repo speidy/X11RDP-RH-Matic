@@ -32,6 +32,8 @@ X11rdp backend for xrdp remote access server
 env PATH=%{buildroot}%%DESTDIR%%/bin:${PATH} ./buildx.sh %{buildroot}%%DESTDIR%%
 find %{buildroot}/%%DESTDIR%%/bin %{buildroot}/%%DESTDIR%%/lib -exec chrpath --replace %%DESTDIR%%/lib {} \;
 find %{buildroot} -type f -exec sed -i 's|%{buildroot}||g' {} \;
+mkdir -p %{buildroot}/usr/bin
+ln -s %%DESTDIR%%/bin/X11rdp %{buildroot}/usr/bin
 
 %clean
 %{__rm} -rf %{buildroot}
