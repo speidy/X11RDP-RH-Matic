@@ -32,6 +32,7 @@ XRDP_BUILD_DEPENDS="autoconf automake libtool openssl-devel pam-devel libX11-dev
 X11RDP_BUILD_DEPENDS="autoconf automake libtool flex bison gcc gcc-c++ libxml2-python gettext perl-XML-Parser xorg-x11-font-utils libxslt"
 EXTRA_SOURCE="xrdp.init xrdp.sysconfig xrdp.logrotate xrdp-pam-auth.patch buildx_patch.diff"
 CONFIGURE_ARGS="--enable-fuse"
+X11RDP_DESTDIR=/opt/X11rdp
 
 error_exit() {
 	echo
@@ -99,8 +100,8 @@ generate_spec()
 	-e "s/%%GH_ACCOUNT%%/${GH_ACCOUNT}/g" \
 	-e "s/%%GH_PROJECT%%/${GH_PROJECT}/g" \
 	-e "s/%%GH_COMMIT%%/${GH_COMMIT}/g" \
-	-e "s/%%CONFIGURE_ARGS%%/${CONFIGURE_ARGS}/g" \
 	-e "s/%%makeCommand%%/${makeCommand}/g" \
+	-e "s|%%DESTDIR%%|/opt/X11rdp|g" \
 	< SPECS/x11rdp.spec.in > SPECS/x11rdp.spec
 	echo 'done'
 }
@@ -134,7 +135,7 @@ build_rpm()
 	done
 
 	QA_RPATHS=$[0x0001] rpmbuild -ba SPECS/xrdp.spec
-	QA_RPATHS=$[0x0001] rpmbuild -ba SPECS/x11rdp.spec
+	QA_RPATHS=$[0x0001|0x0002] rpmbuild -ba SPECS/x11rdp.spec
 }
 
 parse_commandline_args()

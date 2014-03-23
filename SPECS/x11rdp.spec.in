@@ -18,26 +18,25 @@ BuildRoot:	%{_tmppath}/%{name}-%{version}-root
 X11rdp backend for xrdp remote access server
 
 %prep
-%setup -q -n %%GH_ACCOUNT%%-%%GH_PROJECT%%-%%GH_COMMIT%%
-%patch0 -p0
+%setup -q -n %%GH_ACCOUNT%%-%%GH_PROJECT%%-%%GH_COMMIT%%/xorg/X11R7.6
+%patch0 -p2
 %{__sed} -i.bak \
 	-e 's/if ! mkdir $PREFIX_DIR/if ! mkdir -p $PREFIX_DIR/' \
 	-e 's/make -j 1/%%makeCommand%%/g' \
 	-e 's|^download_url=http://server1.xrdp.org/xrdp/X11R7.6|download_url=http://www.club.kyutech.ac.jp/~meta/distfiles/xrdp/X11R7.6|' \
-	xorg/X11R7.6/buildx.sh
+	buildx.sh
 
 %build
-cd xorg/X11R7.6
-env PATH=%{buildroot}/opt/X11rdp/bin:${PATH} ./buildx.sh %{buildroot}/opt/X11rdp
 
 %install
-%{__mkdir} -p %{buildroot}/usr/bin
-ln -s /opt/X11rdp/bin/X11rdp %{buildroot}/usr/bin/X11rdp
+env PATH=%{buildroot}%%DESTDIR%%/bin:${PATH} ./buildx.sh %{buildroot}%%DESTDIR%%
+find %{buildroot}/%%DESTDIR%%/bin %{buildroot}/%%DESTDIR%%/lib -exec chrpath --replace %%DESTDIR%%/lib {} \;
+find %{buildroot} -type f -exec sed -i 's|%{buildroot}||g' {} \;
 
 %clean
-#%{__rm} -rf %{buildroot}
+%{__rm} -rf %{buildroot}
 
 %files
 %defattr(-,root,root)
-/opt/X11rdp/*
+%%DESTDIR%%/*
 %{_bindir}
