@@ -14,9 +14,8 @@ Patch0:		buildx_patch.diff
 BuildRequires:	%%BUILDREQUIRES%%
 BuildRoot:	%{_tmppath}/%{name}-%{version}-root
 
-
 %description
-foobar
+X11rdp backend for xrdp remote access server
 
 %prep
 %setup -q -n %%GH_ACCOUNT%%-%%GH_PROJECT%%-%%GH_COMMIT%%
